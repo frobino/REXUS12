@@ -1,0 +1,31 @@
+SPECS:
+the program(s) should wait for the LO and SOE signal from GPIOs of the board.
+When both of the signals are '1', the CPU should:
+  1) Redirect inputs from the serial input 1 to another serial port (and save them to flash);
+  2) Wait for incoming IP connections (on eth0) and save them to flash;
+
+IMPLEMENTATION:
+2 processes using interprocess communication through shared memory.
+One process always read, the other always write, so protection has not been implemented (semaphores,etc.)
+  - state machine: check datas from LO and SOE, and write "Start" to the shared memory when both signals are '1'.
+  - RSrouter: polling on the shared memory, waiting for a "Start".
+              When "Start" is found, it generates 2 pthreads, one for redirecting the serial, one for the eth0 connection.
+
+TOPICS studied:
+  - clear distinction between processes, threads, tasks
+  - inter and intra process comunication techniques (shered memory)
+  - techniques to simulate hw using linux (mkpipe). Used in ForSyDe-Simulink cosimulation also.
+  - how to manage low level hw:
+				* write to external memories (flash)
+				* usage of sockets to open devices (eth)
+				* gpios, serial ports, ...
+
+COMMENTS:
+this version of the program permits me to test the CPUs functionalities without HW attached.
+GPIOs and serial are modeled as mkfifo in the /tmp/ directory:
+  - /tmp/LO: mkfifo for LO signal
+  - /tmp/LO.txt: file containing simulation values for LO signal. Format: 000111, through "cat" command
+  - /tmp/SOE: mkfifo for SOE signal
+  - /tmp/SOE.txt: file containing simulation values for SOE signal. Format: 000011, through "cat" command
+  - /tmp/serial: mkfifo for serial input communication
+  - /tmp/serial.txt: file containing datas to be sent through serial port through "cat" command

@@ -1,0 +1,2 @@
+versione in cui il server si mette in attesa e ogni volta che il client viene fatto girare,
+il client manda un msg a server, che lo riceve e lo stampa su schermo

@@ -1,0 +1,62 @@
+------------------------------------------------------------------------
+To connect pc and cpu and exchange files
+------------------------------------------------------------------------
+
+PC A type command:
+Code:
+
+ifconfig eth0 192.168.1.1 up
+
+
+PC B type command:
+Code:
+
+ifconfig eth0 192.168.1.2 up
+
+From PC A type to see if connected or not
+Code:
+
+ping 127.0.0.1
+ping 192.168.1.2
+
+OR from PC B type to see if connected or not
+Code:
+
+ping 127.0.0.1
+ping 192.168.1.1
+
+To copy file between 2 server/pc make sure ssh is running. Or type command on both PC:
+Code:
+
+/etc/init.d/sshd start
+
+To copy file from PCA to PCB type command
+Code:
+
+scp filename user@192.168.1.2:/tmp
+
+GUI network config tool
+Code:
+
+system-config-network
+
+Type all above command as the root user.
+
+ATTENTION!
+
+CPU programs MUST be compiled for 32 bit OS, before copying them on CPU:
+
+---->    gcc talker.c -o talker_i486 -lm -march=i486 -m32 (gould need g++multilib package)
+
+http://nixcraft.com/linux-software/888-how-connect-two-linux-installed-system-using-ethernet.html
+
+------------------------------------------------------------------------
+To connect through TCP-IP
+------------------------------------------------------------------------
+
+after pinging and assigning properly ips...
+
+./client.out 192.168.1.222 (ifconfig to see IP oof eth0)
+
+hostname - to see host name (not useful)
+

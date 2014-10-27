@@ -1,0 +1,44 @@
+NOTE: use the xxx_1401212 versions.
+
+SPECs: use a safe, fast protocol of communication through wifi, so that it works also if connection is lost.
+       The program should shuffle directories and send files as soon as something new appears in he folder.
+
+IMPLEMENTATION: + sockets
+		+ tcp/ip managed by linux kernel
+		+ communication protocol to send files as binary, without loosing or mixing infos between files
+		+ deep and safe control, to avoid lost and nix of bytes between files
+
+HOW to use: 
+
+Receiver (cpu2), implemented in RSrouter2.c:
+
+- waits for upcoming connection.
+
+- as soon as the connection is established, it saves file after files with the name "receivedX.jp2" in the same folder of the executable. X is a number from 0 to 9. In this example I send only 10 files, but this condition can be easily changed.
+
+- run the executable without arguments.
+
+Sender (cpu1), implemented in client.c:
+
+- connects to cpu2 and send the same file (test.jp2) 10 times.
+
+- there is a delay of 10 seconds between every send. In this way I started the experiment (10files, 10 seconds each= 100 sec). I disconnected the cable between modems for more than 30 seconds during the experiment (between t=30sec and t2=60sec).
+All received files where not corrupted, so in my opinion we can keep this TCP protocol, who seems quite safe.
+From my understanding of how the Unix kernel manage the connection loss, it stores in buffer up to 20 packets before messing up, but this parameter is customisable. So, depending on the wc time of disconnection, we can resize the buffer.
+
+- the files received are saved in the same directory of the executable.
+
+- run the executable with 1 argument, the cpu2 ip address.
+
+WHAT IS MISSING:
+
+- sender side, selecting properly the files to send. I got different opinions from all of you about how we should select things to send, so before implementing it I want that everything is clear.
+
+- the project I attach is bypassing the SOE and LOE checks, because I have not the hw here. However in the code it is clearly shown which line to uncomment to reintroduce this functionality.
+
+FUTURE WORKS:
+
+- adding proper folder hierarchy, file selection, run multiple processes for imus datas.
+
+- In order to test I think this sw is enough. I can add additional details and create multiple processes for IMUs datas etc etc in the future.
+In addition I have written quite a lot of comments, so the code can be easily modified from other people if needed.
